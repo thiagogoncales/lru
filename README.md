@@ -51,8 +51,8 @@ Its time complexity depends on the internal LRU Queue implementation.
 A simple implementation of the Queue. In essence, it's just an array. It exposes methods to add to the end of the array, pop from the beginning and remove an item from the array.
 
 #### Time Complexity
-As a simple implementation, it has as time complexity (N is number of keys in cache/queue):
-- add - O(1)
+The time complexity really comes from how adding requires removing the element first and then appending it to the tail of the list, and finding elements in a list if O(N).
+- add - O(N)
 - remove - O(N)
 - pop - O(N) (we are popping from the start, so yea) 
 

@@ -10,6 +10,11 @@ class LRUQueueSimple:
         self.inner = []
 
     def add(self, value):
+        try:
+            self.remove(value)
+        except LRUQueueException:
+            pass
+
         self.inner.append(value)
 
     def remove(self, value):
@@ -145,9 +150,6 @@ class LRUCache:
         return key in self._inner
 
     def _add_key_to_lru_queue(self, key):
-        if self._has_key(key):
-            self._inner_q.remove(key)
-
         self._inner_q.add(key)
 
     def _get_lru_key_to_remove(self):
