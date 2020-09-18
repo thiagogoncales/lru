@@ -1,27 +1,27 @@
 import pytest
-from lru import (LRUCache, LRUCacheException)
+from lru import LRUCacheException
 
 
-def test_initializes_empty_cache():
-    cache = LRUCache(5)
+def test_initializes_empty_cache(LRUCacheParametrized):
+    cache = LRUCacheParametrized(5)
 
 
-def test_inserts_and_gets_value():
-    cache = LRUCache(5)
+def test_inserts_and_gets_value(LRUCacheParametrized):
+    cache = LRUCacheParametrized(5)
     expected_value = 'I am expected'
     mock_key = 'such key'
     cache.put(mock_key, expected_value)
     assert cache.get(mock_key) == expected_value
 
 
-def test_gets_non_existing_key_returns_none():
-    cache = LRUCache(5)
+def test_gets_non_existing_key_returns_none(LRUCacheParametrized):
+    cache = LRUCacheParametrized(5)
     mock_key = 'I do not exist'
     assert cache.get(mock_key) is None
 
 
-def test_delete_key():
-    cache = LRUCache(5)
+def test_delete_key(LRUCacheParametrized):
+    cache = LRUCacheParametrized(5)
     expected_value = 'I am expected'
     mock_key = 'such key'
     cache.put(mock_key, expected_value)
@@ -29,15 +29,15 @@ def test_delete_key():
     assert cache.get(mock_key) is None
 
 
-def test_delete_non_existent_key_noop():
-    cache = LRUCache(5)
+def test_delete_non_existent_key_noop(LRUCacheParametrized):
+    cache = LRUCacheParametrized(5)
     mock_key = 'I do not exist'
     cache.delete(mock_key)
     assert cache.get(mock_key) is None
 
 
-def test_reset_dict():
-    cache = LRUCache(5)
+def test_reset_dict(LRUCacheParametrized):
+    cache = LRUCacheParametrized(5)
     expected_value = 'I am expected'
     mock_key = 'such key'
     cache.put(mock_key, expected_value)
@@ -45,9 +45,9 @@ def test_reset_dict():
     assert cache.get(mock_key) is None
 
 
-def test_can_insert_up_to_size():
+def test_can_insert_up_to_size(LRUCacheParametrized):
     size = 5
-    cache = LRUCache(size)
+    cache = LRUCacheParametrized(size)
 
     def get_mock_value(key):
         return 'value {}'.format(key)
@@ -59,10 +59,10 @@ def test_can_insert_up_to_size():
         assert cache.get(i) == get_mock_value(i)
 
 
-def test_inserting_when_full_removes_lru_key():
+def test_inserting_when_full_removes_lru_key(LRUCacheParametrized):
     size = 5
     keys = list(range(5))
-    cache = LRUCache(size)
+    cache = LRUCacheParametrized(size)
 
     def get_mock_value(key):
         return 'value {}'.format(key)
@@ -81,13 +81,13 @@ def test_inserting_when_full_removes_lru_key():
         assert cache.get(i) == get_mock_value(i)
 
 
-def test_assert_get_updates_lru():
+def test_assert_get_updates_lru(LRUCacheParametrized):
     size = 2
     old_key_to_be_get = 'old but should not be deleted'
     new_key_but_will_be_deleted = 'new but should be deleted'
     mock_value = 'mock value'
 
-    cache = LRUCache(size)
+    cache = LRUCacheParametrized(size)
 
     cache.put(old_key_to_be_get, mock_value)
     cache.put(new_key_but_will_be_deleted, 'some value')
@@ -99,7 +99,7 @@ def test_assert_get_updates_lru():
     assert cache.get(new_key_but_will_be_deleted) is None
 
 
-def test_deleting_lru_key_removes_from_lru_queue():
+def test_deleting_lru_key_removes_from_lru_queue(LRUCacheParametrized):
     def get_mock_value(key):
         return 'value {}'.format(key)
 
@@ -111,7 +111,7 @@ def test_deleting_lru_key_removes_from_lru_queue():
     key_add_removes_first = 'fifth!'
     key_add_removes_third = 'sixth!'
 
-    cache = LRUCache(size)
+    cache = LRUCacheParametrized(size)
 
     cache.put(first_key, get_mock_value(first_key))
     cache.put(second_key, get_mock_value(second_key))
@@ -143,10 +143,10 @@ def test_deleting_lru_key_removes_from_lru_queue():
     assert cache.get(third_key) is None
 
 
-def test_updating_value_when_full_works():
+def test_updating_value_when_full_works(LRUCacheParametrized):
     size = 5
     keys = list(range(5))
-    cache = LRUCache(size)
+    cache = LRUCacheParametrized(size)
 
     def get_mock_value(key):
         return 'value {}'.format(i)
