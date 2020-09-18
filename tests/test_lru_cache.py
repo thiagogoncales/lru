@@ -6,6 +6,13 @@ def test_initializes_empty_cache(LRUCacheParametrized):
     cache = LRUCacheParametrized(5)
 
 
+def test_initialization_invalid_size_raises(LRUCacheParametrized):
+    with pytest.raises(LRUCacheException):
+        LRUCacheParametrized(0)
+
+    with pytest.raises(LRUCacheException):
+        LRUCacheParametrized(-1)
+
 def test_inserts_and_gets_value(LRUCacheParametrized):
     cache = LRUCacheParametrized(5)
     expected_value = 'I am expected'

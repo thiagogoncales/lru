@@ -1,6 +1,7 @@
 class LRUCacheException(Exception):
     pass
 
+
 class LRUQueueException(Exception):
     pass
 
@@ -108,6 +109,8 @@ class LRUQueueButFaster:
 
 class LRUCache:
     def __init__(self, size, queue_constructor=LRUQueueButFaster):
+        if size < 1:
+            raise LRUCacheException('cache size must be > 0')
         self.size = size
         self._queue_constructor = queue_constructor
         self._set_inner_storage()
