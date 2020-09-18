@@ -1,6 +1,9 @@
 class LRUCacheException(Exception):
     pass
 
+class LRUQueueException(Exception):
+    pass
+
 
 class LRUCache:
     def __init__(self, size):
@@ -30,3 +33,26 @@ class LRUCache:
 
     def _is_full(self):
         return len(self._inner) == self.size
+
+
+class LRUQueue:
+    def __init__(self):
+        self.inner = []
+
+    def add(self, value):
+        self.inner.append(value)
+
+    def remove(self, value):
+        self.inner.remove(value)
+
+    def pop(self):
+        try:
+            return self.inner.pop()
+        except IndexError:
+            raise LRUQueueException('Popping from empty list')
+
+    def _test_is_empty(self):
+        return len(self.inner) == 0
+
+    def _test_element_in(self, value):
+        return value in self.inner
