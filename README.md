@@ -63,32 +63,39 @@ An implementation of LRU Queue, but faster. It uses of a doubly linked list and 
 Create the queue:
 ```py
 q = LRUQueueButFaster()
-# LRU -> None
-# MRU -> None
+# LRU -> None <- MRU
 # Map = {}
 ```
 Add the first key
 ```py
 q.add('key1')
-# LRU -> Node(key1)
-# MRU -> Node(key1)
 # Map = {key1: Node(key1)}
+# LRU -> Node(key1) <- MRU
+
 ```
 Add another key
 ```py
 q.add('key2')
-# LRU -> Node(key1)
-# MRU -> Node(key2)
 # Map = {key1: Node(key1), key2: Node(key2)}
-# Node(key1) <-> Node(key2)
+# LRU -> Node(key1) <-> Node(key2) <- MRU
 ```
 Add another key
 ```py
 q.add('key3')
-# LRU -> Node(key1)
-# MRU -> Node(key3)
 # Map = {key1: Node(key1), key2: Node(key2), key3: Node(key3)}
-# Node(key1) <-> Node(key2) <-> Node(key3)
+# LRU -> Node(key1) <-> Node(key2) <-> Node(key3) <- MRU
+```
+Read the first key
+```py
+q.get('key1')
+# Map = {key1: Node(key1), key2: Node(key2), key3: Node(key3)}
+# LRU -> Node(key2) <-> Node(key3) <-> Node(key1) <- MRU
+```
+Remove the second key
+```py
+q.get('key1')
+# Map = {key1: Node(key1), key3: Node(key3)}
+# LRU -> Node(key3) <-> Node(key1) <- MRU
 ```
 
 #### Time Complexity
