@@ -44,12 +44,13 @@ def test_reset_dict():
     cache.reset()
     assert cache.get(mock_key) is None
 
+
 def test_can_insert_up_to_size():
     size = 5
     cache = LRUCache(size)
 
     def get_mock_value(key):
-        return 'value {}'.format(i)
+        return 'value {}'.format(key)
 
     for i in range(size):
         cache.put(i, get_mock_value(i))
@@ -58,18 +59,88 @@ def test_can_insert_up_to_size():
         assert cache.get(i) == get_mock_value(i)
 
 
-def test_inserting_when_full_breaks():
+def test_inserting_when_full_removes_lru_key():
     size = 5
+    keys = list(range(5))
     cache = LRUCache(size)
 
     def get_mock_value(key):
-        return 'value {}'.format(i)
+        return 'value {}'.format(key)
 
-    for i in range(size):
+    for i in keys:
         cache.put(i, get_mock_value(i))
 
-    with pytest.raises(LRUCacheException):
-        cache.put('no good, it is full', 'mock_value')
+    new_key = 'should be inserted, even though it is full'
+    mock_value = 'mock_value'
+    cache.put(new_key, mock_value)
+
+    assert cache.get(new_key) == mock_value
+
+    assert cache.get(keys[0]) is None
+    for i in keys[1:]:
+        assert cache.get(i) == get_mock_value(i)
+
+
+def test_assert_get_updates_lru():
+    size = 2
+    old_key_to_be_get = 'old but should not be deleted'
+    new_key_but_will_be_deleted = 'new but should be deleted'
+    mock_value = 'mock value'
+
+    cache = LRUCache(size)
+
+    cache.put(old_key_to_be_get, mock_value)
+    cache.put(new_key_but_will_be_deleted, 'some value')
+
+    cache.get(old_key_to_be_get)
+    cache.put('a new key appears', 'some other value')
+
+    assert cache.get(old_key_to_be_get) == mock_value
+    assert cache.get(new_key_but_will_be_deleted) is None
+
+
+def test_deleting_lru_key_removes_from_lru_queue():
+    def get_mock_value(key):
+        return 'value {}'.format(key)
+
+    size = 3
+    first_key = 'first!'
+    second_key = 'second!'
+    third_key = 'third!'
+    fourth_key = 'fourth!'
+    key_add_removes_first = 'fifth!'
+    key_add_removes_third = 'sixth!'
+
+    cache = LRUCache(size)
+
+    cache.put(first_key, get_mock_value(first_key))
+    cache.put(second_key, get_mock_value(second_key))
+    cache.put(third_key, get_mock_value(third_key))
+
+    # currently cache is full, with lru as 1, 2, 3
+    # delete key 2 so lru becomes 1, 3
+    cache.delete(second_key)
+
+    # adding key 4 is fine because it's not full anymore
+    # lru is 1, 3, 4
+    cache.put(fourth_key, get_mock_value(fourth_key))
+
+    assert cache.get(first_key) == get_mock_value(first_key)
+    assert cache.get(third_key) == get_mock_value(third_key)
+    assert cache.get(fourth_key) == get_mock_value(fourth_key)
+    assert cache.get(second_key) is None
+
+    # adding keys now remove according to lru
+    cache.put(key_add_removes_first, get_mock_value(key_add_removes_first))
+    cache.put(key_add_removes_third, get_mock_value(key_add_removes_third))
+
+    assert cache.get(fourth_key) == get_mock_value(fourth_key)
+    assert cache.get(key_add_removes_first) == \
+        get_mock_value(key_add_removes_first)
+    assert cache.get(key_add_removes_third) == \
+        get_mock_value(key_add_removes_third)
+    assert cache.get(first_key) is None
+    assert cache.get(third_key) is None
 
 
 def test_updating_value_when_full_works():

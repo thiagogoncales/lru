@@ -3,9 +3,12 @@ from lru import (LRUQueue, LRUQueueException)
 
 def test_initialize_and_add_to_queue():
     queue = LRUQueue()
-    mock_value = 'I am a mock'
-    queue.add(mock_value)
-    assert queue.pop() == mock_value
+    first_value = 'first'
+    second_value = 'first'
+    queue.add(first_value)
+    queue.add(second_value)
+    assert queue.pop() == first_value
+    assert queue.pop() == second_value
 
 
 def test_popping_from_empty_list_raises():
@@ -26,3 +29,9 @@ def test_remove_element():
     assert not queue._test_element_in(mock_value)
 
 
+def test_removing_non_existing_element():
+    queue = LRUQueue()
+    queue.add('some value')
+
+    with pytest.raises(LRUQueueException):
+        queue.remove('I do not exist')
